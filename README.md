@@ -13,7 +13,7 @@ More examples of recordings can be found [here](https://github.com/nbedos/termto
 ## Necessary Equipment
 
 - Arduino UNO
-- CAN-Bus Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
+- CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 - OBD-II Cable
 
 ## Contact
