@@ -16,11 +16,10 @@ I really like the clean look of SVG animations. I wanted to see
 how this solution would hold out against other terminal
 recorders such as [asciinema](https://github.com/asciinema/asciinema).
 
-## Installation
-termtosvg is compatible with Python >= 3.5 and can be installed with pip:
-```
-pip3 install --user termtosvg
-```
+## Execution Environment
+
+- Arduino with CAN-Bus Shield 
+- OBD-II Cable
 
 ## Usage
 ### Basic usage
