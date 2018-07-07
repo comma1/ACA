@@ -10,15 +10,24 @@ This program make entry barriers of automotive security research lower.
 More examples of recordings can be found [here](https://github.com/nbedos/termtosvg/blob/0.3.0/examples/examples.md)
 -->
 
-## Motivation
-I really like the clean look of SVG animations. I wanted to see
-how this solution would hold out against other terminal
-recorders such as [asciinema](https://github.com/asciinema/asciinema).
-
 ## Necessary Equipment
 
 - Arduino UNO
 - CAN-Bus Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 - OBD-II Cable
 
-## Usage
+## Contact
+
+Tae Un Kang (ktw1332@korea.ac.kr)
+
+## License
+
+Vehicle Data Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
+
+CC: SA-BY-NC
+
+SA(Share-alike): Licensees may distribute derivative works only under a license identical ("not more restrictive") to the license that governs the original work.
+
+BY(Attribution): Licensees may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author or licensor the credits (attribution) in the manner specified by these
+
+NC(Non-commercial): Licensees may copy, distribute, display, and perform the work and make derivative works and remixes based on it only for non-commercial purposes.
