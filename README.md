@@ -6,10 +6,11 @@ This program make entry barriers of automotive security research lower.
 
 2. Contact
 
-- Tae Un Kang (ktw1332@korea.ac.kr) and Huy Kang Kim (cenda@korea.ac.kr) 
-Automated CAN Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
+- Tae Un Kang (ktw1332@korea.ac.kr) 
 
 3. License
+
+- Automated CAN Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
 
 - CC: SA-BY-NC
 - SA(Share-alike): Licensees may distribute derivative works only under a license identical ("not more restrictive") to the license that governs the original work.
