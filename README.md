@@ -1,8 +1,9 @@
 [![Build Status](https://travis-ci.org/nbedos/termtosvg.svg?branch=master)](https://travis-ci.org/nbedos/termtosvg)
 
-# termtosvg
-A Linux terminal recorder written in Python that renders your command
-line sessions as standalone SVG animations.
+# Automated CAN Analyzer
+We developed a data analysis program that can be used on all vehicle models. 
+
+This program make entry barriers of automotive security research lower.
 
 <p align="center">
     <img src="https://cdn.rawgit.com/nbedos/termtosvg/0.3.0/examples/awesome.svg">
