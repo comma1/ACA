@@ -1,6 +1,6 @@
 1. Introduction 
 
-We developed a data analysis program that can be used on all vehicle models. 
+- We developed a data analysis program that can be used on all vehicle models. 
 This program make entry barriers of automotive security research lower.
 
 
