@@ -6,7 +6,7 @@ This program make entry barriers of automotive security research lower.
 
 2. Contact
 
-- Tae Un Kang (ktw1332 at korea.ac.kr) and Huy Kang Kim (cenda at korea.ac.kr) 
+- Tae Un Kang (ktw1332@korea.ac.kr) and Huy Kang Kim (cenda@korea.ac.kr) 
 Automated CAN Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
 
 3. License
