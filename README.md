@@ -15,7 +15,7 @@ I really like the clean look of SVG animations. I wanted to see
 how this solution would hold out against other terminal
 recorders such as [asciinema](https://github.com/asciinema/asciinema).
 
-## Execution Environment
+## Necessary Equipment
 
 - Arduino with CAN-Bus Shield 
 - OBD-II Cable
