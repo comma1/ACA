@@ -17,7 +17,8 @@ recorders such as [asciinema](https://github.com/asciinema/asciinema).
 
 ## Necessary Equipment
 
-- Arduino with CAN-Bus Shield 
+- Arduino UNO
+- CAN-Bus Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 - OBD-II Cable
 
 ## Usage
