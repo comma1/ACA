@@ -11,8 +11,9 @@ The update will be completed on July 22, 2018.
 </p>
 More examples of recordings can be found [here](https://github.com/nbedos/termtosvg/blob/0.3.0/examples/examples.md)
 -->
-## Installing
+## Dependencies
 
+To use ACA in your application developments, you must have installed the following dependencies before you install ACA: 
 - pip install pyserial (https://github.com/pyserial/pyserial)
 - pip install prettytable (http://code.google.com/p/prettytable) 
 - pip install xlsxwriter (https://github.com/jmcnamara/XlsxWriter)
