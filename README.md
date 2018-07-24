@@ -16,8 +16,8 @@ More examples of recordings can be found [here](https://github.com/nbedos/termto
 To use ACA in your application developments, you must have installed the following dependencies before you install ACA:
 - <span><a href="https://www.python.org/downloads/" style="text-decoration: none;" ><b> Python 3.7.0 (and later versions)</b></a> </span>
 - <span><a href="https://github.com/pyserial/pyserial" style="text-decoration: none;" ><b> pip install pyserial (>=3.4)</b></a> </span>
-- pip install prettytable (>=0.7.2) (http://code.google.com/p/prettytable) 
-- pip install xlsxwriter (>=1.0.5) (https://github.com/jmcnamara/XlsxWriter)
+- <span><a href="http://code.google.com/p/prettytable" style="text-decoration: none;" ><b> pip install prettytable (>=0.7.2)</b></a> </span>
+- <span><a href="https://github.com/jmcnamara/XlsxWriter" style="text-decoration: none;" ><b> pip install xlsxwriter (>=1.0.5)</b></a> </span>
 
 ## Necessary Equipment
 
