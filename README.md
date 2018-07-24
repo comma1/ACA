@@ -11,6 +11,11 @@ The update will be completed on July 22, 2018.
 </p>
 More examples of recordings can be found [here](https://github.com/nbedos/termtosvg/blob/0.3.0/examples/examples.md)
 -->
+## Installing
+
+- OBD-II Cable
+- OBD-II Cablehttp://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
+- OBD-II Cable
 
 ## Necessary Equipment
 
