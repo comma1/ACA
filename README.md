@@ -21,13 +21,13 @@ To use ACA in your application developments, you must have installed the followi
 
 ## Necessary Equipment
 
-- Arduino UNO
-- CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
+- Arduino UNO REV3 (https://store.arduino.cc/usa/arduino-uno-rev3)
+- CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2) 
 - OBD-II Cable
 
 ## Quick Start
 
-1. Arduino UNO
+1. Arduino UNO 
 2. CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 3. OBD-II Cable
 
