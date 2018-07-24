@@ -25,6 +25,12 @@ To use ACA in your application developments, you must have installed the followi
 - CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 - OBD-II Cable
 
+## Quick Start
+
+1. Arduino UNO
+2. CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
+3. OBD-II Cable
+
 ## Contact
 
 Tae Un Kang (ktw1332@korea.ac.kr)
