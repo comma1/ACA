@@ -23,7 +23,7 @@ To use ACA in your application developments, you must have installed the followi
 
 - Arduino UNO REV3 (https://store.arduino.cc/usa/arduino-uno-rev3)
 - CAN-BUS Shield (http://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2) 
-- OBD-II Cable
+- DB9 OBD-II Cable (https://www.amazon.com/Serial-OBD-II-Allows-Access-Connector/dp/B01EI7KY10/ref=sr_1_3?ie=UTF8&qid=1532457331&sr=8-3&keywords=OBDII+db9)
 
 ## Quick Start
 
