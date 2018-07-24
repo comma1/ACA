@@ -13,7 +13,7 @@ More examples of recordings can be found [here](https://github.com/nbedos/termto
 -->
 ## Installing
 
-- OBD-II Cable
+- pip install pyserial (https://github.com/pyserial/pyserial)
 - OBD-II Cablehttp://wiki.seeedstudio.com/CAN-BUS_Shield_V1.2/) 
 - OBD-II Cable
 
