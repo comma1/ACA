@@ -29,7 +29,8 @@ To use ACA in your application developments, you must have installed the followi
 
 1. <a href='https://www.arduino.cc/en/Main/Software'>Install Arduino IDE (version >= 1.8.5)</a>
 2. <a href='https://github.com/comma1/ACA/tree/master/Arduino'>Download Arduino Source Code and Compile</a>
-3. 
+3. We equipped Arduino UNO with CAN Bus Shield as shown in Fig. 1 so that Arduino UNO can communicate through CAN. Then, we connect OBD-II port cable to DB9 port as shown in Fig. 2, and USB cable to USB 2.0 port of a laptop. We can communicate with the CAN bus through Arduino UNO as shown in Fig. 2.
+
 ## Contact
 
 Tae Un Kang (ktw1332@korea.ac.kr)
