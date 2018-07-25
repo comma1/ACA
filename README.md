@@ -47,7 +47,7 @@ Tae Un Kang (ktw1332@korea.ac.kr)
 
 ## License
 
-Vehicle Data Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
+Automated CAN Analyzer is free software distributed under the Terms and Conditions of the CCL(Creative Commons License).
 
 CC: SA-BY-NC
 
