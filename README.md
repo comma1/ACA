@@ -34,10 +34,10 @@ To use ACA in your application developments, you must have installed the followi
 3. We equipped Arduino UNO with CAN Bus Shield as shown in Fig. 1 so that Arduino UNO can communicate through CAN. Then, we connect OBD-II port cable to DB9 port as shown in Fig. 2, and USB cable to USB 2.0 port of a laptop. We can communicate with the CAN bus through Arduino UNO as shown in Fig. 2.
 
 <div align="center">
-  <img src="https://postfiles.pstatic.net/MjAxODA3MjVfMTE3/MDAxNTMyNTIzMzUyNzQ2.oWdyOxjl-UjO9Ddcmz7X9SD-LF3XzXdlZN6xEw-HgNMg.MfXX-3C9NaykKRIPn_IfpRqjmN67BJWXmZkm0seKDF4g.PNG.ktw1332/Arduino.png?type=w773" width="50%" height="50%"><br>Fig. 1. Arduino UNO with CAN-BUS Shield<br>
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjVfMTE3/MDAxNTMyNTIzMzUyNzQ2.oWdyOxjl-UjO9Ddcmz7X9SD-LF3XzXdlZN6xEw-HgNMg.MfXX-3C9NaykKRIPn_IfpRqjmN67BJWXmZkm0seKDF4g.PNG.ktw1332/Arduino.png?type=w773" width="70%" height="70%"><br>Fig. 1. Arduino UNO with CAN-BUS Shield<br>
 </div>
 <div align="center">
-  <img src="https://postfiles.pstatic.net/MjAxODA3MjVfMTEx/MDAxNTMyNTI0MDg2OTAw.2zW3lS6XzyU2Vvg-vZqFzHIcTjeszrs1mAQoHZphlb0g.FqMm2BCF8nSjk4Ma8uehfjj3d83KxjbQgGK6_Ot92nEg.PNG.ktw1332/20180725_220754.png?type=w773" width="50%" height="50%"><br>Fig. 2. Setting of experiment environment using Arduino and OBD-II cable<br>
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjVfMTEx/MDAxNTMyNTI0MDg2OTAw.2zW3lS6XzyU2Vvg-vZqFzHIcTjeszrs1mAQoHZphlb0g.FqMm2BCF8nSjk4Ma8uehfjj3d83KxjbQgGK6_Ot92nEg.PNG.ktw1332/20180725_220754.png?type=w773" width="70%" height="70%"><br>Fig. 2. Setting of experiment environment using Arduino and OBD-II cable<br>
 </div>
 
 ## Contact
