@@ -43,7 +43,7 @@ To use ACA in your application developments, you must have installed the followi
 
 ## Contact
 
-Tae Un Kang (ktw1332@korea.ac.kr)
+Tae Un, Kang (ktw1332@korea.ac.kr)
 
 ## License
 
