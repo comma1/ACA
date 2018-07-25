@@ -27,7 +27,7 @@ To use ACA in your application developments, you must have installed the followi
 
 ## Quick Start
 
-1. Install Arduino IDE (version >= 1.8.5) (https://www.arduino.cc/en/Main/Software)
+1. <a href='https://www.arduino.cc/en/Main/Software'>Install Arduino IDE (version >= 1.8.5)</a>
 2. 
 
 ## Contact
