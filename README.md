@@ -48,8 +48,7 @@ To use ACA in your application developments, you must have installed the followi
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMjU3/MDAxNTMyNTg5NTc2NTA0.rCEdum4pRS0Fk9q4kSbqbbc8Evln_9w2DVq3tc2T-DYg.SKrRJWJazVj5i7yaPHf06SxFfYjeIuSo52JmSotOan0g.PNG.ktw1332/20180726_161909.png?type=w773" width="70%" height="70%"><br><br>
 </div>
 <br>
-5. Edit [Setting][port] in config.ini
-   (In this case, Arduino COM port is COM3.)
+5. Edit [Setting][port] in config.ini. Enter the COM port value confirmed in the Device Manager.
 <br>
 <div align="center"><br>
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
@@ -57,7 +56,7 @@ To use ACA in your application developments, you must have installed the followi
 6. Run main.py
 <br>
 <div align="center"><br>
-  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMTA2/MDAxNTMyNTk4MzE2MDIx.N-uL5b8Z6uyWV8OxPwUZUkbV8335R9eImUvfUvzzwGkg.Wy7wf5s0o0L2DBIk8If83VbU65-iyGRSAQxxt_uwYY8g.PNG.ktw1332/run.png?type=w773" width="70%" height="70%"><br><br>
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMTA2/MDAxNTMyNTk4MzE2MDIx.N-uL5b8Z6uyWV8OxPwUZUkbV8335R9eImUvfUvzzwGkg.Wy7wf5s0o0L2DBIk8If83VbU65-iyGRSAQxxt_uwYY8g.PNG.ktw1332/run.png?type=w773" width="90%" height="90%"><br><br>
 </div>
 
 ## Contact
