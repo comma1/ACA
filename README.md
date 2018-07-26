@@ -43,14 +43,14 @@ To use ACA in your application developments, you must have installed the followi
 <br>
 4. Check COM Ports in Device Manager.
    (In this case, Arduino COM port is COM3.)
-
+<br>
 <div align="center">
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMjU3/MDAxNTMyNTg5NTc2NTA0.rCEdum4pRS0Fk9q4kSbqbbc8Evln_9w2DVq3tc2T-DYg.SKrRJWJazVj5i7yaPHf06SxFfYjeIuSo52JmSotOan0g.PNG.ktw1332/20180726_161909.png?type=w773" width="70%" height="70%"><br><br>
 </div>
 <br>
 5. Edit [Setting][port] in config.ini
    (In this case, Arduino COM port is COM3.)
-
+<br>
 <div align="center">
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
 </div>
