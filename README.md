@@ -51,7 +51,12 @@ To use ACA in your application developments, you must have installed the followi
 5. Edit [Setting][port] in config.ini
    (In this case, Arduino COM port is COM3.)
 <br>
-<div align="center">
+<div align="center"><br>
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
+</div>
+6. Run main.py
+<br>
+<div align="center"><br>
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
 </div>
 ## Contact
