@@ -57,8 +57,9 @@ To use ACA in your application developments, you must have installed the followi
 6. Run main.py
 <br>
 <div align="center"><br>
-  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMTA2/MDAxNTMyNTk4MzE2MDIx.N-uL5b8Z6uyWV8OxPwUZUkbV8335R9eImUvfUvzzwGkg.Wy7wf5s0o0L2DBIk8If83VbU65-iyGRSAQxxt_uwYY8g.PNG.ktw1332/run.png?type=w773" width="70%" height="70%"><br><br>
 </div>
+
 ## Contact
 
 Tae Un, Kang (ktw1332@korea.ac.kr)
