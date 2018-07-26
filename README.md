@@ -40,14 +40,20 @@ To use ACA in your application developments, you must have installed the followi
 <div align="center">
   <img src="https://postfiles.pstatic.net/MjAxODA3MjVfMTE3/MDAxNTMyNTIzMzUyNzQ2.oWdyOxjl-UjO9Ddcmz7X9SD-LF3XzXdlZN6xEw-HgNMg.MfXX-3C9NaykKRIPn_IfpRqjmN67BJWXmZkm0seKDF4g.PNG.ktw1332/Arduino.png?type=w773" width="70%" height="70%"><br>Fig. 2. Setting of experiment environment using Arduino and OBD-II cable<br>
 </div>
-
+<br>
 4. Check COM Ports in Device Manager.
    (In this case, Arduino COM port is COM3.)
 
 <div align="center">
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMjU3/MDAxNTMyNTg5NTc2NTA0.rCEdum4pRS0Fk9q4kSbqbbc8Evln_9w2DVq3tc2T-DYg.SKrRJWJazVj5i7yaPHf06SxFfYjeIuSo52JmSotOan0g.PNG.ktw1332/20180726_161909.png?type=w773" width="70%" height="70%"><br><br>
 </div>
+<br>
+5. Edit [Setting][port] in config.ini
+   (In this case, Arduino COM port is COM3.)
 
+<div align="center">
+  <img src="https://postfiles.pstatic.net/MjAxODA3MjZfODAg/MDAxNTMyNTkwMDA4Nzgx.SiIisnIOMuXGAFD3_Fc_a9-gKzkfsSur71_zzizvOvIg.GxHQHAlX-b9Cj1LLfOJCTS56nbrcy0hIJ2BoNuyHFkIg.PNG.ktw1332/12.png?type=w773" width="70%" height="70%"><br><br>
+</div>
 ## Contact
 
 Tae Un, Kang (ktw1332@korea.ac.kr)
