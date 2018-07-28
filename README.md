@@ -58,7 +58,7 @@ To use ACA in your application developments, you must have installed the followi
 <div align="center"><br>
   <img src="https://postfiles.pstatic.net/MjAxODA3MjZfMTA2/MDAxNTMyNTk4MzE2MDIx.N-uL5b8Z6uyWV8OxPwUZUkbV8335R9eImUvfUvzzwGkg.Wy7wf5s0o0L2DBIk8If83VbU65-iyGRSAQxxt_uwYY8g.PNG.ktw1332/run.png?type=w773" width="90%" height="90%"><br><br>
 </div>
-7. We can open CAN_Analysis_report.xlsx (path: /Automated CAN Analyzer/CANdata_log/) and check result.
+7. We can open CAN_Analysis_report.xlsx (path: /ACA/CANdata_log/) and check result.
 <br>
 <div align="center"><br>
   <img src="https://postfiles.pstatic.net/MjAxODA3MjhfMTAx/MDAxNTMyNzU5MDU0NzE3.lHoGCXOvgfdFokyDsGVmD2HrBbM6hvv4QJqqfxsusgYg.df_6R81fGo7S7DhSmluYyWmh749cWApLa6iYefROGDkg.PNG.ktw1332/excel_output.png?type=w773" width="90%" height="90%"><br><br>
