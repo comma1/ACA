@@ -1,10 +1,7 @@
-
 # Automated CAN Analyzer
 We developed a data analysis program that can be used on all vehicle models. 
 
 This program make entry barriers of automotive security research lower.
-
-The update will be completed on July 22, 2018.
 
 <!--<p align="center">
     <img src="https://cdn.rawgit.com/nbedos/termtosvg/0.3.0/examples/awesome.svg">
