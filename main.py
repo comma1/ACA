@@ -26,11 +26,16 @@ class ReaderThread(threading.Thread):
 
     def stop(self):
         self.alive = False
-        if hasattr(self.serial, 'cancel_read'):
-            self.serial.cancel_read()
-        self.join(2)
+        try:
+            if hasattr(self.serial, 'cancel_read'):
+                self.serial.cancel_read()
+            self.join(2)
+        except Exception as e:
+            pass
+
 
     def run(self):
+        global token
         if not hasattr(self.serial, 'cancel_read'):
             self.serial.timeout = 1
         self.protocol = self.protocol_factory()
@@ -43,11 +48,12 @@ class ReaderThread(threading.Thread):
             return
         error = None
         self._connection_made.set()
-        while self.alive and self.serial.isOpen():
+        while self.alive and self.serial.isOpen() and token != 2:
             try:
                 data = self.serial.read(1)
             except serial.SerialException as e:
                 error = e
+                #print("run()-1", str(e))
                 break
             else:
                 if data:
@@ -55,8 +61,8 @@ class ReaderThread(threading.Thread):
                         self.protocol.data_received(data)
                     except Exception as e:
                         error = e
-                        print(str(e))
-                        break
+                        #print("run()-2", str(e))
+                        #break
         self.alive = False
         self.protocol.connection_lost(error)
         self.protocol = None
@@ -108,6 +114,7 @@ class rawProtocal(Protocol):
     # 연결 종료시 발생
     def connection_lost(self, exc):
         self.transport = None
+        self.running = False
 
     def push_canframe(self):
         end = time.perf_counter()
@@ -171,7 +178,7 @@ conf_file = 'config.ini'
 config = configparser.ConfigParser()
 config.read(conf_file, encoding='utf-8')
 
-ser = serial.serial_for_url(config.get('Setting','port'), baudrate=115200, timeout=1)
+ser = serial.serial_for_url(config.get('Setting', 'port'), baudrate=115200, timeout=1)
 token = 0
 current_OBD = -1
 OBDList = []
@@ -196,8 +203,9 @@ def can_log_setting():
             try:
                 if file[0] != '~':
                     numbers.add(int(file.split('.')[0]))
-            except:
-                print("HERE")
+            except Exception as e:
+                print("LOG_SETTING ERROR", str(e), 'exit')
+                exit(0)
         for file in filelist2:
             if file[0] != '~':
                 numbers.add(int(file.split('.')[0]))
@@ -212,57 +220,14 @@ def start_can():
         time.sleep(1)
 
 def end_can():
-    global token
+    global token, ser, p
     if token == 1:
-        logger.info("CAN 통신 종료")
-        token = 0
-    # while token == 1:
-    #     ser.write(b'\xff')
-    #     time.sleep(1)
-
-def generateTable():
-    time.sleep(static_dynamic_stationary_analysis_time)
-    CANList = p.CANList + p.CAN_static_dynamic_List
-    temp = dict()
-    for CANmsg in CANList:
+        logger.info("CAN Communication Finish")
         try:
-            CAN_analysis_dict[CANmsg[1]].append(CANmsg)
+            token = 2
+            ser.close()
         except Exception as e:
-            if CANmsg[0] not in CAN_analysis_dict.keys():
-                CAN_analysis_dict[CANmsg[1]] = []
-                CAN_analysis_dict[CANmsg[1]].append(CANmsg)
-            else:
-                logger.debug("ERROR-" + str(e))
-    logger.info("CAN Message Count: %s / CAN ID Count: %s" % (len(CANList), len(CAN_analysis_dict.keys())))
-    for key, value in CAN_analysis_dict.items():
-        logger.debug("분석할 CAN ID: %s" % key)
-        CANData_analysis = [set(), set(), set(), set(), set(), set(), set(), set()]
-        for CANmsg in value:
-            for i in range(3, 11):
-                CANData_analysis[i - 3].add(CANmsg[i])
-        logger.debug(CANData_analysis)
-        temp[key] = CANData_analysis
-    x = PrettyTable(padding_width=0)
-    Datafield = []
-    for i in range(1, 9):
-        Datafield.append("DATA[%s]" % i)
-    x.field_names = ['CAN ID'] + Datafield
-    for k, v in temp.items():
-        temp_list = []
-        for items in v:
-            str_temp = ''
-            items = sorted(list(items))
-            i = 1
-            for item in items[:-1]:
-                str_temp += item + ' '
-                if i % 5 == 0:
-                    str_temp += '\n'
-                i = i + 1
-            str_temp += items[-1]
-            temp_list.append(str_temp)
-        x.add_row([k] + temp_list)
-    x.sortby = "CAN ID"
-    return str(x), temp
+            pass
 
 
 def load_csv():
@@ -274,40 +239,14 @@ def load_csv():
 def OBD_info(csv_data, PID):
     for row in csv_data:
         field = row.split(',')
-        if int(field[0]) == PID:
-            return field[0], int(field[1]), int(field[2]), field[3]
+        try:
+            if int(field[0], 16) == PID:
+                return field[0], int(field[1]), int(field[2]), field[3]
+        except Exception as e:
+            print(field[0], PID)
+            print(str(e))
+            exit(0)
 
-
-def find_OBD_relevant_CANID(_data_lines, _Return_Bytes, _Return_Bytes_Cnt, _analysis_CAN_data_count, _index, _type):
-    return_value = []
-    if _index - _analysis_CAN_data_count >= 0:
-        _start = _index - _analysis_CAN_data_count
-    else:
-        _start = 0
-    for j in range(_start, _index):
-        data_lines_split = _data_lines[j].split('\t')
-        if data_lines_split[1] == '0x7e8':
-            continue
-        _CAN_Data_field = data_lines_split[3:]
-        for byte_index in range(0, len(_CAN_Data_field) - _Return_Bytes_Cnt + 1):
-            sw = 1
-            byte_start = byte_index
-            for l in range(_Return_Bytes_Cnt):
-                try:
-                    if _CAN_Data_field[byte_index + l] != _Return_Bytes[l]:
-                        sw = 0
-                        break
-                    else:
-                        pass
-                except Exception as e:
-                    logger.info("ERROR l:%s" % l)
-                    logger.info("ERROR byte_index:%s " % byte_index)
-                    logger.info("ERROR %s" % str(e))
-                    exit(0)
-            if sw == 1:
-                return_value.append((_data_lines[j], _Return_Bytes, byte_start+1, byte_index+Return_Bytes_Cnt, _type))
-                logger.debug("FIND: %s %s %s %s" % (_data_lines[j], _Return_Bytes, byte_start+1, byte_index+Return_Bytes_Cnt))
-    return return_value
 
 def makeTable(_field_names, _Datafield):
     x = PrettyTable(padding_width=0)
@@ -341,20 +280,91 @@ def generate_Xlsx(_worksheet, _stationary_info):
 def analysis_exit(_analysis_time):
     return time.time()-_analysis_time
 
+
 def loadSetting():
-    return [int(config.get('static_dynamic', 'static_dynamic_stationary_analysis_time')),
-            int(config.get('static_dynamic', 'static_dynamic_driving_analysis_time')),
-            config.get('CANdata_log', 'path'),
-            open('config.ini', 'r').readlines()]
+    return [config.get('CANdata_log', 'path'), open('config.ini', 'r').readlines()]
+
+
+def finding_obd_queries():
+    supported_OBD_List_str = config.get('Finding available OBD-II PID queries', 'supported_OBD_List').split(',')
+    Supported_OBD_PIDs, hex_Supported_OBD_PIDs = [], []
+    if ',' in supported_OBD_List_str:
+        OBD_Supported_PIDs_List = [int(PID.strip()) for PID in supported_OBD_List_str]
+        Supported_OBD_PIDs, hex_Supported_OBD_PIDs = OBD_Supported_PIDs_List, [hex(pid) for pid in OBD_Supported_PIDs_List]
+    else:
+        Finding_available_OBD_II_time = float(
+            config.get('Finding available OBD-II PID queries', 'finding_supported_OBD_PID_time'))
+        Request_PID_LIST, Find_PID_LIST = list(i * 32 for i in range(0, 7)), []
+        OBD_Supported_PIDs_List = []
+        start_time = time.time()
+        while Finding_available_OBD_II_time > time.time() - start_time:
+            for PID in Request_PID_LIST:
+                ser.write(PID.to_bytes(1, byteorder='big'))
+                logger.info("PID %s Send(delay: %s)" % (hex(PID), request_delay_time))
+                time.sleep(request_delay_time)
+            templist = p.CANList
+            for temp in templist:
+                PID = int(temp[5], 16)
+                if temp[1] == '0x7e8' and PID % 32 == 0:
+                    try:
+                        if PID in Request_PID_LIST:
+                            Request_PID_LIST.remove(PID)
+                            Find_PID_LIST.append(PID)
+                    except Exception as e:
+                        print("ERROR-1", str(e), "exit(0)")
+                        print(PID)
+                        print(Request_PID_LIST)
+                        exit(0)
+                    if temp[1:] not in OBD_Supported_PIDs_List:
+                        OBD_Supported_PIDs_List.append(temp[1:])
+        Enabled_OBD_PIDs = '0' * 192
+        Find_PID_LIST.sort()
+        logger.info("PID: " + str(Find_PID_LIST))
+        for CANframe in OBD_Supported_PIDs_List:
+            base = int(CANframe[4], 16)
+            temp = ''
+            for i in range(5, 9):
+                try:
+                    if CANframe[i] == '0x0':
+                        temp += ''.zfill(8)
+                    elif len(CANframe[i]) == 3:
+                        temp += bin(int(CANframe[i][2], 16))[2:].zfill(4) + ''.zfill(4)
+                    else:
+                        temp += bin(int(CANframe[i][2], 16))[2:].zfill(4) + bin(int(CANframe[i][3], 16))[2:].zfill(4)
+                except Exception as e:
+                    print("ERROR-2", str(e))
+                    exit(0)
+            Enabled_OBD_PIDs = Enabled_OBD_PIDs[:base] + temp + temp[base:]
+        for i in range(len(Enabled_OBD_PIDs)):
+            if Enabled_OBD_PIDs[i] == '1':
+                Supported_OBD_PIDs.append(i + 1)
+                hex_Supported_OBD_PIDs.append(hex(i + 1))
+    logger.info("Supported OBD PIDs: %s\n" % hex_Supported_OBD_PIDs)
+    return Supported_OBD_PIDs, hex_Supported_OBD_PIDs
+
+def input_each_PIDs(Supported_OBD_PIDs):
+    PID_sleep_time = float(config.get('Input each OBD-II PID queries', 'PID_sleep_time'))
+    analysis_PID_count = int(config.get('Input each OBD-II PID queries', 'analysis_PID_count'))
+    if analysis_PID_count > 0:
+        Supported_OBD_PIDs = Supported_OBD_PIDs[:analysis_PID_count]
+
+    for PID in Supported_OBD_PIDs:
+        ser.write(PID.to_bytes(1, byteorder='big'))
+        time.sleep(PID_sleep_time)
+        logger.info("PID %s[%s] Analysis" % (PID, hex(PID)))
+        for temp in OBDList:
+            if int(temp[5], 16) == PID:
+                logger.info(str(temp).strip())
+    logger.info("Finish!\n")
+
 
 with ReaderThread(ser, rawProtocal) as p:
     can_log_setting()
     start_can()
-
-    while p.isDone():
+    request_delay_time = float(config.get('Finding available OBD-II PID queries', 'request_delay_time'))
+    if p.isDone():
         return_value = loadSetting()
-        static_dynamic_stationary_analysis_time, static_dynamic_driving_analysis_time, can_data_log_path, config_lines =\
-        return_value[0], return_value[1], return_value[2], return_value[3]
+        can_data_log_path, config_lines = return_value[0], return_value[1]
         analysis_time = time.time()
         report_filename = config.get('CANdata_log', 'analysis_filename')
         report_filename2 = can_data_log_path[2:] + "/%s. %s_%s.xlsx" % (next_num, report_filename, datetime.datetime.now().strftime('%Y-%m-%d'))
@@ -365,157 +375,14 @@ with ReaderThread(ser, rawProtocal) as p:
             worksheet.write(config_row_index, config_col_index, str(config_row.strip()))
             config_row_index += 1
 
-        wrap = workbook.add_format()
-        wrap.set_text_wrap(); wrap.set_align('center'); wrap.set_align('vcenter')
-        worksheet = workbook.add_worksheet('stationary_table')
-        logger.info("1. Classifying static or dynamic field)")
-        logger.info("1-1. [Stationary] CAN Analysis(%ss)" % static_dynamic_stationary_analysis_time)
-        stationary_table, stationary_info = generateTable()
-        generate_Xlsx(worksheet, stationary_info)
-        p.CAN_static_dynamic_List.clear()
-        p.CANList.clear()
-        #input("driving state ready?")
-        time.sleep(static_dynamic_driving_analysis_time)
-        logger.info("1-2. [Driving] CAN Analysis(%ss)" % static_dynamic_driving_analysis_time)
-        worksheet2 = workbook.add_worksheet('driving_table');
-        row, col = 0, 0
-        driving_table, driving_info = generateTable()
-        generate_Xlsx(worksheet2, driving_info)
-        p.CAN_static_dynamic_List.clear(); p.CANList.clear()
+    logger.info("1. Finding available OBD-II PID queries")
+    Supported_OBD_PIDs, Hex_Supported_OBD_PIDs = finding_obd_queries()
 
-        # worksheet = workbook.add_worksheet("Static => Dynamic analysis")
-        # worksheet.set_column(0, 0, 22)
-        CAN_ID_associated_with_engine_dict = {}
-        CAN_ID_associated_with_unless_dict = {}
-        for key, val in driving_info.items():
-            for i in range(len(val)):
-                col = 0
-                try:
-                    if key in ('0x7e8', '0x7e9'):
-                        worksheet.write(row, col, "[%s] Except CAN ID" % key)
-                        row = row+1
-                        break
-                    elif val[i] != stationary_info[key][i]:
-                        try:
-                            CAN_ID_associated_with_engine_dict[key].append(i+1)
-                        except:
-                            CAN_ID_associated_with_engine_dict[key] = [i+1]
-                        #worksheet.write(row, col, "[%s][%d] driving: %s" % (key, i+1, val[i])); row = row+1
-                        #worksheet.write(row, col, "[%s][%d] stationary: %s" % (key, i + 1, stationary_info[key][i])); row = row + 1
-                    elif val[i] == stationary_info[key][i] and len(val[i]) == 1 and len(val[i]) == 1:
-                        try:
-                            CAN_ID_associated_with_unless_dict[key].append(i + 1)
-                        except:
-                            CAN_ID_associated_with_unless_dict[key] = [i + 1]
-                        # worksheet.write(row, col, "UNLESS(driving)");col = col + 1;
-                        # worksheet.write(row, col, key);col = col + 1;
-                        # worksheet.write(row, col, str(i+1));col = col + 1;
-                        # worksheet.write(row, col, str(val[i]));col = col + 1;
-                        # row = row + 1; col = 0
-                        # worksheet.write(row, col, "UNLESS(stationary)");col = col +1;
-                        # worksheet.write(row, col, key);col = col + 1;
-                        # worksheet.write(row, col, str(i + 1));col = col + 1;
-                        # worksheet.write(row, col, str(stationary_info[key][i]));col = col + 1;
-                        # row = row + 1;
-                except Exception as e:
-                    print(str(e))
-                    worksheet.write(row, col, "ERROR CAN ID: %s" % key);
-                    exit(0)
-                    row = row + 1
-                    break
+    logger.info("2.1. Input each OBD-II PID queries\n")
+    input_each_PIDs(Supported_OBD_PIDs)
 
-        worksheet = workbook.add_worksheet("CAN_ID_associated_with_engine")
-        row, col = 0, 0
-        for key, val in CAN_ID_associated_with_engine_dict.items():
-            col = 0
-            worksheet.write(row, col, str(key)); col = col+1
-            worksheet.write(row, col, str(val))
-            row = row + 1
-        worksheet = workbook.add_worksheet("CAN_ID_associated_unless_dict")
-        row, col = 0, 0
-        for key, val in CAN_ID_associated_with_unless_dict.items():
-            col = 0
-            worksheet.write(row, col, str(key)); col = col + 1
-            worksheet.write(row, col, str(val))
-            row = row + 1
-        analysis_time = analysis_exit(_analysis_time=analysis_time)
-        workbook.worksheets_objs[0].write(config_row_index, config_col_index, 'analysis_time')
-        config_col_index = config_col_index + 1
-        workbook.worksheets_objs[0].write(config_row_index, config_col_index, analysis_time)
-        workbook.close()
-
-        print("");logger.info("2. Finding available OBD-II PID queries")
-        OBD_Supported_PIDs_List = [int(PID.strip()) for PID in config.get('Finding available OBD-II PID queries', 'supported_OBD_List').split(',')]
-        if len(OBD_Supported_PIDs_List) < 5:
-            Finding_available_OBD_II_time = float(config.get('Finding available OBD-II PID queries', 'finding_supported_OBD_PID_time'))
-            Request_PID_LIST = list(i*32 for i in range(0, 7))
-            OBD_Supported_PIDs_List = []
-            temp_time = time.time()
-            for i in range(1, 5):
-            #while Finding_available_OBD_II_time > time.time() - temp_time:
-                logger.info(OBD_Supported_PIDs_List)
-                for PID in Request_PID_LIST:
-                    ser.write(PID.to_bytes(1, byteorder='big'))
-                    logger.info("PID %s SEND.. sleep(2)" % PID)
-                    time.sleep(1)
-                templist = p.CANList
-                for temp in templist:
-                    PID = int(temp[5], 16)
-                    if temp[1] == '0x7e8' and PID % 32 == 0:
-                        try:
-                            if PID in Request_PID_LIST:
-                                Request_PID_LIST.remove(PID)
-                        except:
-                            print("ERROR-1")
-                            print(PID)
-                            print(Request_PID_LIST)
-                            exit(0)
-                        logger.info(temp)
-                        if temp[1:] not in OBD_Supported_PIDs_List:
-                            OBD_Supported_PIDs_List.append(temp[1:])
-
-            Enabled_OBD_PIDs = '0'*192
-            for CANframe in OBD_Supported_PIDs_List:
-                base = int(CANframe[4],16)
-                temp = ''
-                for i in range(5, 9):
-                    try:
-                        if CANframe[i] == '0x0':
-                            temp += ''.zfill(8)
-                        elif len(CANframe[i]) == 3:
-                            temp += bin(int(CANframe[i][2], 16))[2:].zfill(4) + ''.zfill(4)
-                        else:
-                            temp += bin(int(CANframe[i][2], 16))[2:].zfill(4) + bin(int(CANframe[i][3], 16))[2:].zfill(4)
-                    except:
-                        print("ERROR-2")
-                        exit(0)
-                Enabled_OBD_PIDs = Enabled_OBD_PIDs[:base]+temp+temp[base:]
-            Supported_OBD_PIDs = []
-            for i in range(len(Enabled_OBD_PIDs)):
-                if Enabled_OBD_PIDs[i] == '1':
-                    Supported_OBD_PIDs.append(i+1)
-        else:
-            Supported_OBD_PIDs = OBD_Supported_PIDs_List
-        logger.info("Already Supported OBD PIDs: %s." % Supported_OBD_PIDs)
-
-        logger.info("2.1. Input each OBD-II PID queries\n")
-        PID_sleep_time = int(config.get('Input each OBD-II PID queries', 'PID_sleep_time'))
-        analysis_PID_count = int(config.get('Input each OBD-II PID queries', 'analysis_PID_count'))
-        if analysis_PID_count > 0:
-            Supported_OBD_PIDs = Supported_OBD_PIDs[:analysis_PID_count]
-
-        for PID in Supported_OBD_PIDs:
-            ser.write(PID.to_bytes(1, byteorder='big'))
-            time.sleep(PID_sleep_time)
-            logger.info("PID %s[%s] 분석" % (PID, hex(PID)))
-            for temp in OBDList:
-                if int(temp[5], 16) == PID:
-                    logger.info(temp)
-
-        logger.info("2.2. analysis OBD-II PID and CAN ID\n")
-        break
-    #end_can()
-    logger.info("분석할 CAN ID 개수: %s" % len(p.CANList))
+    logger.info("2.2. analysis OBD-II PID and CAN ID\n")
+    logger.info("Analyze CAN ID Count: %s" % len(p.CANList))
     for CANmsg in p.CANList:
         line = ''
         for a in CANmsg[:-1]:
@@ -523,7 +390,8 @@ with ReaderThread(ser, rawProtocal) as p:
         line += CANmsg[-1]
         fw.write(line + '\n')
     fw.close()
-    fr_raw_file = open(can_data_log_path[2:] + "/%s. %s_%s.txt" % (next_num, raw_filename, datetime.datetime.now().strftime('%Y-%m-%d')), 'r')
+    file_name = "/%s. %s_%s.txt" % (next_num, raw_filename, datetime.datetime.now().strftime('%Y-%m-%d'))
+    fr_raw_file = open(can_data_log_path[2:] + file_name, 'r')
     data_lines = fr_raw_file.read().split('\n')[:-1]
     OBDList_timestamp = []
     OBDList_timestamp_num = []
@@ -531,68 +399,176 @@ with ReaderThread(ser, rawProtocal) as p:
         OBDList_timestamp.append(OBD[0])
     for i in range(len(data_lines)):
         if data_lines[i].split('\t')[0] in OBDList_timestamp:
-            logger.info("%s번째 %s" % (i, data_lines[i]))
+            #logger.info("%sth %s" % (i, data_lines[i]))
             OBDList_timestamp_num.append(str(i)+'\t'+data_lines[i])
     temp_list = []
 
     analysis_CAN_data_count = int(config.get('Input each OBD-II PID queries', 'analysis_CAN_data_count'))
+    obd_dict = {}
+    for row in Hex_Supported_OBD_PIDs:
+        obd_dict[row] = []
+    for OBD_PID in Hex_Supported_OBD_PIDs:
+        for row in OBDList_timestamp_num:
+            row_split = row.split('\t')
+            if OBD_PID == row_split[6]:
+                obd_dict[OBD_PID].append(row)
+    found_obd_pid, not_found_obd_pid = [], []
+    for key, value in obd_dict.copy().items():
+        if len(value) >= 1:
+            found_obd_pid.append(key)
+        else:
+            not_found_obd_pid.append(key)
+            if key in obd_dict: del obd_dict[key]
+    logger.info("found: %s" % found_obd_pid)
+    logger.info("Not found: %s" % not_found_obd_pid)
     csv_data = load_csv()
 
-    engine_info = config.get('static_dynamic', 'CAN_ID_associated_with_engine').split('-')
-    engine_info_list = []
-    for row in engine_info:
-        row_field = row.split('>')
-        CAN_ID = row_field[0].strip()
-        info = [row.strip() for row in row_field[1].strip()[1:-1].split(',')]
-        engine_info_list.append([CAN_ID, info])
+    analysis_pid_dict, analysis_pid_dict2 = {}, {}
 
-    unless_candata_info = config.get('static_dynamic', 'CAN_ID_associated_with_unless_dict').split('-')
-    unless_info_list = []
-    for row in unless_candata_info:
-        row_field = row.split('>')
-        CAN_ID = row_field[0].strip()
-        info = [row.strip() for row in row_field[1].strip()[1:-1].split(',')]
-        unless_info_list.append([CAN_ID, info])
+    for key, value in obd_dict.items():
+        analysis_pid_dict[key] = []
 
-    for OBD in OBDList_timestamp_num:
-        OBD_split_list = OBD.split("\t")
-        index = int(OBD_split_list[0])
-        logger.info("%s 분석" % OBD)
-        PID_int, PID_hex, Return_Bytes_Cnt, PID_name = OBD_info(csv_data, int(OBD_split_list[6], 16))
-        Return_Bytes = OBD_split_list[7:7 + Return_Bytes_Cnt]
-        forward_return_values = find_OBD_relevant_CANID(data_lines, Return_Bytes, Return_Bytes_Cnt, analysis_CAN_data_count, index, 'Forward')
-        Reverse_Return_Bytes = Return_Bytes[::-1]
-        reverse_return_values = find_OBD_relevant_CANID(data_lines, Reverse_Return_Bytes, Return_Bytes_Cnt, analysis_CAN_data_count, index, 'Reverse')
-        all_return_values = forward_return_values + reverse_return_values
-        for row in all_return_values:
-            can_info = row[0].split('\t')
-            data__field = [None, None, None, None, None, None, None, None]
-            z = 0
-            for i in range(8):
-                if (int(row[2])-1) <= i <= (int(row[3])-1):
-                    data__field[i] = row[1][z]
-                    z = z+1
+    for key, value in obd_dict.items():
+        logger.info("Analysis PID: %s" % str(key))
+        analysis_list = value
+        PID_hex, PID_int, Return_Bytes_Cnt, PID_name = OBD_info(csv_data, int(key, 16))
+        PID_hex = '0x'+PID_hex
+        for row in analysis_list:
+            data_field = row.split('\t')[4:]
+            obd_pid_count_offset = int(row.split('\t')[0])
+            analysis_data_lines = data_lines[obd_pid_count_offset-analysis_CAN_data_count:obd_pid_count_offset+analysis_CAN_data_count]
+            Return_Bytes = data_field[3:3 + Return_Bytes_Cnt]
+            if Return_Bytes == ['0x00'] or Return_Bytes == ['0x00', '0x00'] or Return_Bytes == ['0x00', '0x00', '0x00'] or \
+                Return_Bytes == ['0x00', '0x00', '0x00', '0x00'] or Return_Bytes == ['0x00', '0x00', '0x00', '0x00', '0x00']:
+                continue
+            elif Return_Bytes != Return_Bytes[::-1]:
+                all_Return_Bytes = [Return_Bytes, Return_Bytes[::-1]]
+            else:
+                all_Return_Bytes = Return_Bytes
+            for i in range(len(analysis_data_lines)):
+                if analysis_data_lines[i].split('\t')[1] != '0x7e8':
+                    data_field = analysis_data_lines[i].split('\t')[3:]
+                    mark = 0
+                    for analysis_return_bytes in all_Return_Bytes:
+                        if type(analysis_return_bytes) is str:
+                            analysis_return_bytes = [analysis_return_bytes]
+                        for j in range(len(data_field)):
+                            if analysis_return_bytes == data_field[j:j+Return_Bytes_Cnt]:
+                                if mark == 0:
+                                    matching_type = 'forward'
+                                else:
+                                    matching_type = 'reverse'
+                                if j+Return_Bytes_Cnt >= 8:
+                                    end_pos = 7
+                                else:
+                                    end_pos = j+Return_Bytes_Cnt-1
+                                data = (str(analysis_data_lines[i]), str(analysis_return_bytes), matching_type, str(j) + '-' + str(end_pos))
+                                logger.info("FOUND / " + str(analysis_data_lines[i]) + ' / ' +str(analysis_return_bytes) +' / ' + matching_type)
+                                analysis_pid_dict[key].append(data)
+                                break
+                        mark = mark + 1
+    logger.info(analysis_pid_dict)
+
+    for key, value in analysis_pid_dict.items():
+        if len(value) >= 1:
+            analysis_pid_dict2[key] = []
+
+    for key, value in analysis_pid_dict.items():
+        if len(value) >= 1:
+            for row in value:
+                can_id = row[0].split('\t')[1]
+                data_field = row[0].split('\t')[3:]
+                location = row[3]
+                analysis_pid_dict2[key].append((can_id, data_field, location))
+
+    analysis_pid_dict3 = {}
+    for key, value in analysis_pid_dict2.items():
+        temp = value
+        temp_dict = {}
+        for row in value:
+            print(row)
+            temp_dict[row[0]+','+row[2]] = 0
+        for row in value:
+            temp_dict[row[0] + ',' + row[2]] += 1
+        temp_dict = sorted(temp_dict.items(), key=operator.itemgetter(1), reverse=True)
+        analysis_pid_dict3[key] = temp_dict
+
+    worksheet = workbook.add_worksheet('CAN msg candidates related PID')
+
+    worksheet_row_index, worksheet_col_index = 0, 0
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'PID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'CAN ID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Data Byte Offset'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Count'); worksheet_col_index = 0; worksheet_row_index += 1
+
+    for key, value in analysis_pid_dict3.items():
+        for row in value:
+            worksheet.write(worksheet_row_index, worksheet_col_index, str(key.strip()))
+            worksheet.write(worksheet_row_index, worksheet_col_index + 1, str(row[0].split(',')[0]))
+            worksheet.write(worksheet_row_index, worksheet_col_index + 2, str(row[0].split(',')[1]))
+            worksheet.write(worksheet_row_index, worksheet_col_index + 3, str(row[1]))
+            worksheet_row_index += 1
+        worksheet_row_index += 1
+
+    for key, value in analysis_pid_dict3.items():
+        print_line = key+' / '+str(value[0])
+        logger.info(print_line)
+
+    worksheet = workbook.add_worksheet('CAN msg related PID')
+
+    worksheet_row_index, worksheet_col_index = 0, 0
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'PID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'CAN ID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Data Byte Offset'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Count'); worksheet_col_index = 0; worksheet_row_index += 1
+
+    for key, value in analysis_pid_dict3.items():
+        worksheet.write(worksheet_row_index, worksheet_col_index, str(key.strip()))
+        worksheet.write(worksheet_row_index, worksheet_col_index+1, str(value[0][0].split(',')[0]))
+        worksheet.write(worksheet_row_index, worksheet_col_index+2, str(value[0][0].split(',')[1]))
+        worksheet.write(worksheet_row_index, worksheet_col_index+3, str(value[0][1]))
+        worksheet_row_index += 1
+
+    injection_time = float(config.get('CAN messages injection to real vehicles', 'injection_time'))
+
+    ser.write(b'\xfe')
+
+    worksheet = workbook.add_worksheet('CAN injection result')
+    worksheet_row_index, worksheet_col_index = 0, 0
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'PID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Description'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'CAN ID'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Data Field(Offset)'); worksheet_col_index += 1
+    worksheet.write(worksheet_row_index, worksheet_col_index, 'Vehicle Status'); worksheet_col_index = 0;
+    worksheet_row_index += 1
+
+    for key, value in analysis_pid_dict3.items():
+        worksheet_col_index = 0
+        logger.info("PID: %s/injection time: %s" % (key, injection_time))
+        logger.info(str(value[0]))
+        start_pos, end_pos = value[0][0].split(',')[1].split('-')
+        PID_INT = int(key, 16)
+        injection_msg_0 = int(PID_INT / 100)
+        injection_msg_1 = PID_INT % 100
+
+        start_time = time.time()
+        while injection_time >= time.time() - start_time:
+            ser.write(injection_msg_0.to_bytes(1, byteorder='big'))
+            ser.write(injection_msg_1.to_bytes(1, byteorder='big'))
+            for i in range(0, 8):
+                pass
+                if int(start_pos) <= i <= int(end_pos):
+                    ser.write(b'\xff')
                 else:
-                    data__field[i] = '0'
-            temp_row = [PID_int, PID_name, can_info[1]] + data__field + [row[4]]
-            engine_check = 0
-            for row in engine_info_list:
-                if row[0] == can_info[1]:
-                    engine_check = 1
-                    temp_row += [str(row[1])]
-                    break
-            if engine_check == 0:
-                temp_row += ['']
-            unless_check = 0
-            for row in unless_info_list:
-                if row[0] == can_info[1]:
-                    unless_check = 1
-                    temp_row += [str(row[1])]
-                    break
-            if unless_check == 0:
-                temp_row += ['']
-            if temp_row not in temp_list:
-                temp_list.append(temp_row)
-    field_names = ['PID', 'Description', 'CAN ID'] + [("DATA[%s]" % i) for i in range(1, 9)] + ['Type'] + ['engine', 'unless']
-    logger.info("\n"+makeTable(field_names, temp_list))
-    print("FINISH")
+                    ser.write(b'\x00')
+            time.sleep(0.001)
+        vehicle_status = input("input vehicle status: ")
+        PID_hex, PID_int, Return_Bytes_Cnt, PID_name = OBD_info(csv_data, int(key, 16))
+        worksheet.write(worksheet_row_index, worksheet_col_index, key); worksheet_col_index += 1
+        worksheet.write(worksheet_row_index, worksheet_col_index, PID_name); worksheet_col_index += 1
+        worksheet.write(worksheet_row_index, worksheet_col_index, value[0][0].split(',')[0]); worksheet_col_index += 1
+        worksheet.write(worksheet_row_index, worksheet_col_index, value[0][0].split(',')[1]); worksheet_col_index += 1
+        worksheet.write(worksheet_row_index, worksheet_col_index, vehicle_status); worksheet_col_index += 1
+        worksheet_row_index += 1
+    workbook.close()
+    end_can()
