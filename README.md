@@ -74,4 +74,8 @@ SA(Share-alike): Licensees may distribute derivative works only under a license 
 
 BY(Attribution): Licensees may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author or licensor the credits (attribution) in the manner specified by these
 
-NC(Non-commercial): Licensees may copy, distribute, display, and perform the work and make derivative works and remixes based on it only for non-commercial purposes.
+NC(Non-commercial): Licensees may copy, distribute, display, and perform the work and make derivative works and remixes based on it only for non-commercial pur## Known issues
+
+## Known issues
+
+With some vehicles, there might be an issue with parsing available OBD-II PIDs in `main.py!finding_obd_queries()`.
