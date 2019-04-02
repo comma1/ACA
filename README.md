@@ -78,4 +78,4 @@ NC(Non-commercial): Licensees may copy, distribute, display, and perform the wor
 
 ## Known issues
 
-With some vehicles, there might be an issue with parsing available OBD-II PIDs in `main.py!finding_obd_queries()`.
+To support more vehicle’s PIDs, the parsing function, `main.py!finding_obd_queries( )`, needs to be improved. 
