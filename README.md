@@ -72,9 +72,9 @@ CC: SA-BY-NC
 
 SA(Share-alike): Licensees may distribute derivative works only under a license identical ("not more restrictive") to the license that governs the original work.
 
-BY(Attribution): Licensees may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author or licensor the credits (attribution) in the manner specified by these
+BY(Attribution): Licensees may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author or licensor the credits (attribution) in the manner specified by these.
 
-NC(Non-commercial): Licensees may copy, distribute, display, and perform the work and make derivative works and remixes based on it only for non-commercial pur
+NC(Non-commercial): Licensees may copy, distribute, display, and perform the work and make derivative works and remixes based on it only for non-commercial purposes.
 
 ## Known issues
 
